@@ -38,7 +38,8 @@ This is the room you started in.
 
 === fight ===
 Two Bugs appear in front of you! Prepare to fight!
->>> FIGHT
+>> ENTER (not yet implemented) (requires the player to press enter to continue)
+>> FIGHT (not yet implemented) (brings the player to an entirely different UI for a fight system)
 ->->
 
 === items ===

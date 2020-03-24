@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace InkConsole.Console
+namespace InkConsole
 {
     class Console : SadConsole.Console
     {
         public string Prompt { get; set; }
         private InkConsoleInput _keyboardInput;
 
-        public Console(int x = 80, int y = 23)
+        public Console(int x, int y)
             : base(x, y)
         {
 

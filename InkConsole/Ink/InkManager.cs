@@ -1,38 +1,35 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InkConsole.Console;
 using Ink.Runtime;
 using SadConsole;
-using InkConsole.Combat;
 
-namespace InkConsole.Prompts
+namespace InkConsole
 {
     class InkManager
     {
-        Console.Console Console;
-        Story InkStory;
+        Console console;
+        Story inkStory;
 
-        public InkManager(Console.Console console, string fileName)
+        Dictionary<string, Action> customCommands;
+
+        public InkManager(Console console, string fileName)
         {
-            this.Console = console;
+            this.console = console;
+            customCommands = new Dictionary<string, Action>();
             LoadFile(fileName);
             Initalize();
         }
 
         private void LoadFile(string fileName)
         {
-            InkStory = new Story(File.ReadAllText(fileName));
+            inkStory = new Story(File.ReadAllText(fileName));
         }
 
         public void Initalize()
         {
-            Console.SetProcess(ProcessInput);
+            console.SetProcess(ProcessInput);
 
             // start tree
             ContinueStory();
@@ -40,20 +37,21 @@ namespace InkConsole.Prompts
 
         public bool NextLine()
         {
-            string line = InkStory.Continue();
+            string line = inkStory.Continue();
             if (line.Contains(">>>"))
             {
-
-                Console.ClearText();
-                List<BaseCharacter> enemies = new List<BaseCharacter>{ new Enemy(), new Enemy() };
-                Debug.WriteLine(enemies.Count);
-                Game.combatManager.OnSuccess = Initalize;
-                Game.combatManager.Initalize(enemies);
-                return false;
+                foreach (KeyValuePair<string, Action> command in customCommands)
+                {
+                    if (line.EndsWith(command.Key))
+                    {
+                        command.Value();
+                    }
+                }
             }
             else
             {
-                Console.PrintLine(line);
+                console.PrintLine(line);
+                return false;
             }
             return true;
         }
@@ -61,12 +59,12 @@ namespace InkConsole.Prompts
         public void ContinueStory()
         {
             // clear the screen
-            Console.ClearText();
+            console.ClearText();
 
             // draw story
-            while (InkStory.canContinue)
+            while (inkStory.canContinue)
             {
-                // if NextLine returns false then it means that a fight was triggered
+                // if NextLine returns false then it means that a command was triggered
                 if (!NextLine())
                 {
                     break;
@@ -74,14 +72,14 @@ namespace InkConsole.Prompts
                 // uncomment out for spaces between sentences 
                 //Console.NextLine();
             }
-            Console.NextLine();
+            console.NextLine();
 
-            if (!InkStory.canContinue && InkStory.currentChoices.Count == 0)
+            if (!inkStory.canContinue && inkStory.currentChoices.Count == 0)
             {
                 Timer exit = new Timer(TimeSpan.FromSeconds(1));
                 exit.TimerElapsed += Exit_TimerElapsed;
-                Console.Components.Add(exit);
-                Console.PrintLine("Exiting in 1 second.");
+                console.Components.Add(exit);
+                console.PrintLine("Exiting in 1 second.");
                 Debug.WriteLine("exiting");
             }
         }
@@ -93,25 +91,25 @@ namespace InkConsole.Prompts
 
         public void DisplayOptions()
         {
-            Console.Print("\nOPTIONS:");
-            foreach (var option in InkStory.currentChoices)
+            console.Print("\nOPTIONS:");
+            foreach (var option in inkStory.currentChoices)
             {
-                Console.Print(" " + option.text);
+                console.Print(" " + option.text);
             }
-            Console.NextLine();
+            console.NextLine();
         }
 
         public void ProcessInput(string input)
         {
             Debug.WriteLine(input);
-            var guy = InkStory.currentChoices.Find(choice => choice.text.Equals(input, StringComparison.OrdinalIgnoreCase));
+            var guy = inkStory.currentChoices.Find(choice => choice.text.Equals(input, StringComparison.OrdinalIgnoreCase));
             if(guy != null)
             {
-                InkStory.ChooseChoiceIndex(guy.index);
+                inkStory.ChooseChoiceIndex(guy.index);
                 ContinueStory();
             } else
             {
-                Console.PrintLine("Invalid Input\n");
+                console.PrintLine("Invalid Input\n");
             }
         }
     }

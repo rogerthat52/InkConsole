@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace InkConsole.Console
+namespace InkConsole
 {
     class InkConsoleInput : KeyboardConsoleComponent
     {
