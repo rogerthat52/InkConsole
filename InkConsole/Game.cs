@@ -3,12 +3,12 @@ using SadConsole;
 
 namespace InkConsole
 {
-	class Game
+	public class Game
 	{
-        private static Point resolution = new Point(80, 25);
-        public static InkManager inkManager;
+        private Point resolution = new Point(80, 25);
+        public InkManager inkManager;
 
-        static void Main()
+        public Game()
         {
             //// Setup the engine and create the main window.
             SadConsole.Game.Create(resolution.X, resolution.Y);
@@ -22,7 +22,7 @@ namespace InkConsole
         }
 
 
-        static void Init()
+        private void Init()
         {
             // make console
             var console = new Console(resolution.X, resolution.Y);
@@ -32,7 +32,7 @@ namespace InkConsole
             Settings.ResizeWindow(resolution.X * console.Font.Size.X, resolution.Y * console.Font.Size.Y);
             
             // attach console to ink manager and load script
-            inkManager = new InkManager(console, "scripts/main.json");
+            inkManager = new InkManager(console, "scripts/main.ink");
 
             // enable console
             console.IsVisible = true;

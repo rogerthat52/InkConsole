@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace InkConsole
 {
-    class Console : SadConsole.Console
+    public class Console : SadConsole.Console
     {
         public string Prompt { get; set; }
         private InkConsoleInput _keyboardInput;
@@ -23,11 +23,15 @@ namespace InkConsole
             ClearText();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ClearText()
         {
             Clear();
             Cursor.Position = new Point(0, 0);
         }
+
         public void PrintLine(string line)
         {
             Cursor.Print(line);

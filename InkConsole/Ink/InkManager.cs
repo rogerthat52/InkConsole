@@ -7,7 +7,7 @@ using SadConsole;
 
 namespace InkConsole
 {
-    class InkManager
+    public class InkManager
     {
         Console console;
         Story inkStory;
@@ -24,7 +24,8 @@ namespace InkConsole
 
         private void LoadFile(string fileName)
         {
-            inkStory = new Story(File.ReadAllText(fileName));
+            var story = new Ink.Compiler(File.ReadAllText(fileName));
+            inkStory = story.Compile();
         }
 
         public void Initalize()
@@ -45,13 +46,14 @@ namespace InkConsole
                     if (line.EndsWith(command.Key))
                     {
                         command.Value();
+                        return false;
+
                     }
                 }
             }
             else
             {
                 console.PrintLine(line);
-                return false;
             }
             return true;
         }
